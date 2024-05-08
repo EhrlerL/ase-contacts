@@ -4,6 +4,7 @@ import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@Tag(name = "Contacts")
 public class ContactBookController {
     private final ContactService contactService;
 
@@ -47,12 +49,12 @@ public class ContactBookController {
             @ApiResponse(responseCode = "200", description = "Successfully saved ContactBook"),
             @ApiResponse(responseCode = "400", description = "Could not save ContactBook")
     })
-    public ResponseEntity<String> saveContactBook(@RequestBody ContactBook contactBook) {
+    public ResponseEntity<Void> saveContactBook(@RequestBody ContactBook contactBook) {
         try {
             this.contactService.saveContactBook(contactBook);
-            return ResponseEntity.ok("ContactBook saved: " + contactBook.getUuid());
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Could not save contact book");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -62,15 +64,15 @@ public class ContactBookController {
             @ApiResponse(responseCode = "400", description = "Could not add Contact to ContactBook"),
             @ApiResponse(responseCode = "404", description = "ContactBook or Contact not found")
     })
-    public ResponseEntity<String> addContactToContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
+    public ResponseEntity<Void> addContactToContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
         try {
             UUID contactUuid = UUID.fromString(contactStringId);
             this.contactService.addContactToContactBook(contactBookUuid, contactUuid);
-            return ResponseEntity.ok("Added contact to contact book");
+            return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Could not add contact to contact book");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -80,15 +82,15 @@ public class ContactBookController {
             @ApiResponse(responseCode = "400", description = "Could not remove Contact from ContactBook"),
             @ApiResponse(responseCode = "404", description = "ContactBook or Contact not found")
     })
-    public ResponseEntity<String> removeContactFromContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
+    public ResponseEntity<Void> removeContactFromContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
         try {
             UUID contactUuid = UUID.fromString(contactStringId);
             this.contactService.removeContactFromContactBook(contactBookUuid, contactUuid);
-            return ResponseEntity.ok("Removed contact from contact book");
+            return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Could not remove contact from contact book");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -97,17 +99,12 @@ public class ContactBookController {
             @ApiResponse(responseCode = "200", description = "Successfully deleted ContactBook"),
             @ApiResponse(responseCode = "404", description = "ContactBook not found")
     })
-    public String deleteContactBook(@PathVariable UUID uuid) {
+    public ResponseEntity<Void> deleteContactBook(@PathVariable UUID uuid) {
         try {
-            boolean success = this.contactService.deleteContactBook(uuid);
-            if (success) {
-                return "ContactList deleted: " + uuid;
-            } else {
-                throw new Exception("ERROR: Could not delete contact book");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return "Could not delete contact book with UUID: " + uuid;
+            this.contactService.deleteContactBook(uuid);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

@@ -5,12 +5,12 @@ import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.entities.contact.ContactBridgeRepository;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBookBridgeRepository;
+import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,43 +37,35 @@ public class ContactService {
     }
 
     public List<Contact> getAllContacts() {
-        try {
-            return this.contactBridgeRepository.findAll();
-        } catch (Exception e) {
-            System.out.println("ERROR: Could not find any contacts");
-            return null;
-        }
+        return this.contactBridgeRepository.findAll();
     }
 
-    public boolean saveContact(Contact contact) {
-        try {
-            this.contactBridgeRepository.save(contact);
-            return true;
-        } catch (Exception e) {
-            System.out.println("ERROR: Could not save contact");
-            return false;
-        }
+    public void saveContact(Contact contact) {
+        this.contactBridgeRepository.save(contact);
     }
 
-    public boolean deleteContact(UUID uuid) {
-        try {
-            List<ContactBook> contactBooks = this.contactBookBridgeRepository.findAll();
-            contactBooks.forEach(book -> book.removeContact(uuid));
-            this.contactBridgeRepository.deleteById(uuid);
-            return true;
-        } catch (Exception e) {
-            System.out.println("ERROR: Could not delete contact with UUID: " + uuid);
-            return false;
-        }
+    public void deleteContact(UUID uuid) {
+        this.contactBridgeRepository.findById(uuid).orElseThrow(
+                () -> new EntityNotFoundException("Contact not found")
+        );
+        List<ContactBook> contactBooks = this.contactBookBridgeRepository.findAll();
+        contactBooks.forEach(book -> {
+            book.removeContact(uuid);
+            this.contactBookBridgeRepository.save(book);
+        });
+
+        this.contactBridgeRepository.deleteById(uuid);
     }
 
-    /*public boolean linkContacts(UUID contactUuid, UUID linkedContactUuid) {
-        try {
-            Contact contact = this.contactBridgeRepository.findById(contactUuid);
-            Contact linkedContact = this.contactBridgeRepository.findById(linkedContactUuid);
-
-        }
-    }*/
+    public void linkContacts(UUID contactUuid, UUID linkedContactUuid, ContactConnection connection) {
+        Contact contact = this.contactBridgeRepository.findById(contactUuid).orElseThrow(
+                () -> new EntityNotFoundException("Contact not found")
+        );
+        Contact linkedContact = this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
+                () -> new EntityNotFoundException("Contact not found")
+        );
+        contact.addLinkedContact(connection, linkedContact);
+    }
 
     /**
      *
@@ -118,14 +110,11 @@ public class ContactService {
         this.contactBookBridgeRepository.save(contactBook);
     }
 
-    public boolean deleteContactBook(UUID uuid) {
-        try {
-            this.contactBookBridgeRepository.deleteById(uuid);
-            return true;
-        } catch (Exception e) {
-            System.out.println("ERROR: Could not delete contact book with UUID: " + uuid);
-            return false;
-        }
+    public void deleteContactBook(UUID uuid) {
+        this.contactBookBridgeRepository.findById(uuid).orElseThrow(
+                () -> new EntityNotFoundException("ContactBook not found")
+        );
+        this.contactBookBridgeRepository.deleteById(uuid);
     }
 
 }

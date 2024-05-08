@@ -2,8 +2,12 @@ package de.dhbw.ase.contacts.plugins.rest;
 
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
-import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
+import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,57 +23,73 @@ public class ContactController {
 	}
 
 	@GetMapping("/contact/{uuid}")
-	public Contact getContact(@PathVariable UUID uuid) {
-		return this.contactService.getContact(uuid);
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully retrieved Contact"),
+			@ApiResponse(responseCode = "404", description = "Contact not found")
+	})
+	public ResponseEntity<Contact> getContact(@PathVariable UUID uuid) {
+		try {
+			Contact contact = this.contactService.getContact(uuid);
+			return ResponseEntity.ok(contact);
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@GetMapping("/contact/all")
-	public List<Contact> getAllContacts() {
-		return this.contactService.getAllContacts();
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully retrieved all Contacts"),
+	})
+	public ResponseEntity<List<Contact>> getAllContacts() {
+		List<Contact> contacts = this.contactService.getAllContacts();
+		return ResponseEntity.ok(contacts);
 	}
 
 	@PostMapping("/contact/save")
-	public String saveContact(@RequestBody Contact contact) {
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully saved Contact"),
+			@ApiResponse(responseCode = "400", description = "Could not save Contact")
+	})
+	public ResponseEntity<Void> saveContact(@RequestBody Contact contact) {
 		try {
-			boolean success = this.contactService.saveContact(contact);
-			if (success) {
-				return "Contact saved: " + contact.getUuid();
-			} else {
-				throw new Exception("ERROR: Could not save contact");
-			}
+			this.contactService.saveContact(contact);
+			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return "Could not save contact";
+			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	@DeleteMapping("/contact/delete/{uuid}")
-	public String deleteContact(@PathVariable UUID uuid) {
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully deleted Contact"),
+			@ApiResponse(responseCode = "404", description = "Contact not found")
+	})
+	public ResponseEntity<Void> deleteContact(@PathVariable UUID uuid) {
 		try {
-			boolean success = this.contactService.deleteContact(uuid);
-			if (success) {
-				return "Contact deleted: " + uuid;
-			} else {
-				throw new Exception("ERROR: Could not delete contact");
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return "Could not delete contact with UUID: " + uuid;
+			this.contactService.deleteContact(uuid);
+			return ResponseEntity.ok().build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.notFound().build();
 		}
 	}
 
-	/*@PostMapping("/contact/{uuid}/link")
-	public String linkContact(@PathVariable UUID contactUuid, @RequestBody UUID linkedContactUuid) {
+	@PostMapping("/contact/{contactUuid}/link")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully linked Contacts"),
+			@ApiResponse(responseCode = "400", description = "Could not link Contacts"),
+			@ApiResponse(responseCode = "404", description = "Contact not found")
+	})
+	public ResponseEntity<Void> linkContact(@PathVariable UUID contactUuid, @RequestBody String linkedContactStringId,
+											@RequestBody String connection) {
 		try {
-			boolean success = this.contactService.linkContacts();
-			if (success) {
-				return "Contact " + linkedContactUuid + " was linked to " + contactUuid;
-			} else {
-				throw new Exception("ERROR: Could not link contacts");
-			}
+			UUID linkedContactUuid = UUID.fromString(linkedContactStringId);
+			ContactConnection contactConnection = ContactConnection.valueOf(connection);
+			this.contactService.linkContacts(contactUuid, linkedContactUuid, contactConnection);
+			return ResponseEntity.ok().build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.notFound().build();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return "Could not link " + linkedContactUuid + " to " + contactUuid;
+			return ResponseEntity.badRequest().build();
 		}
-	}*/
+	}
 }
