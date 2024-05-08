@@ -25,10 +25,6 @@ public class Name {
         return lastName;
     }
 
-    public String getFullName() {
-        return this.firstName + " " + this.lastName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }

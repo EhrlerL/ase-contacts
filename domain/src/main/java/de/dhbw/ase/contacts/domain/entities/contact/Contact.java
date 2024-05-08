@@ -129,7 +129,7 @@ public class Contact {
         this.addresses.add(address);
     }
 
-    public void linkContact(ContactConnection connection, Contact contact) {
+    public void addLinkedContact(ContactConnection connection, Contact contact) {
         this.linkedContacts.put(connection, contact);
     }
 }

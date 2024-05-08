@@ -9,7 +9,7 @@ public class Email {
     private String email;
 
     public Email(FieldType fieldType, String email) {
-        this.fieldType = fieldType;
+        this.fieldType = validateFieldType(fieldType);
         this.email = email;
     }
 
@@ -18,12 +18,15 @@ public class Email {
         this.email = "";
     }
 
-    private FieldType validateFieldType(FieldType fieldType) throws Exception {
-        if (fieldType == FieldType.MOBILE) {
-            throw new Exception("Email must not be from type \"mobile\"");
-        } else {
-            return fieldType;
+    private FieldType validateFieldType(FieldType fieldType) {
+        try{
+            if (fieldType == FieldType.MOBILE) {
+                throw new Exception("Email must not be from type \"mobile\"");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        return fieldType;
     }
 
     public FieldType getFieldType() {
