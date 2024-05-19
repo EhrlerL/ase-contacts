@@ -1,8 +1,5 @@
 package de.dhbw.ase.contacts.domain.entities.contactbook;
 
-import de.dhbw.ase.contacts.domain.entities.contact.Contact;
-
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

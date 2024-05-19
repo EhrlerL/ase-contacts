@@ -1,6 +1,5 @@
 package de.dhbw.ase.contacts.plugins.persistence.contactbook;
 
-import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBookBridgeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

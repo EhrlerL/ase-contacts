@@ -1,15 +1,15 @@
 package de.dhbw.ase.contacts.domain.entities.contact;
 
+import de.dhbw.ase.contacts.domain.values.LinkedContact;
 import de.dhbw.ase.contacts.domain.values.Address;
 import de.dhbw.ase.contacts.domain.values.Email;
 import de.dhbw.ase.contacts.domain.values.Name;
 import de.dhbw.ase.contacts.domain.values.PhoneNumber;
-import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -25,10 +25,11 @@ public class Contact {
     private List<Email> emails;
     @ElementCollection
     private List<Address> addresses;
-    @ManyToMany
-    private Map<ContactConnection, Contact> linkedContacts;
+    @ElementCollection
+    private List<LinkedContact> linkedContacts;
 
-    public Contact(Name name, String birthday, List<PhoneNumber> phoneNumbers, List<Email> emails, List<Address> addresses, Map<ContactConnection, Contact> linkedContacts) {
+    public Contact(UUID uuid, Name name, String birthday, List<PhoneNumber> phoneNumbers, List<Email> emails, List<Address> addresses, List<LinkedContact> linkedContacts) {
+        this.uuid = uuid;
         this.name = name;
         this.birthday = birthday;
         this.phoneNumbers = phoneNumbers;
@@ -43,6 +44,11 @@ public class Contact {
         this.phoneNumbers = phoneNumbers;
         this.emails = emails;
         this.addresses = addresses;
+    }
+
+    public Contact(Name name, List<PhoneNumber> phoneNumbers) {
+        this.name = name;
+        this.phoneNumbers = phoneNumbers;
     }
 
     public Contact(Name name) {
@@ -85,7 +91,7 @@ public class Contact {
         return addresses;
     }
 
-    public Map<ContactConnection, Contact> getLinkedContacts() {
+    public List<LinkedContact> getLinkedContacts() {
         return linkedContacts;
     }
 
@@ -97,39 +103,56 @@ public class Contact {
         this.name = name;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
     public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public void setEmails(List<Email> emails) {
-        this.emails = emails;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-
-    public void setLinkedContacts(Map<ContactConnection, Contact> linkedContacts) {
-        this.linkedContacts = linkedContacts;
-    }
-
-    public void addPhoneNumber(PhoneNumber phoneNumber) {
-        this.phoneNumbers.add(phoneNumber);
-    }
-
-    public void addEmail(Email email) {
-        this.emails.add(email);
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public void addAddress(Address address) {
         this.addresses.add(address);
     }
 
-    public void addLinkedContact(ContactConnection connection, Contact contact) {
-        this.linkedContacts.put(connection, contact);
+    public void removeAddress(Address address) {
+        this.addresses.remove(address);
+    }
+
+    public void addEmail(Email email) {
+        this.emails.add(email);
+    }
+
+    public void removeEmail(Email email) {
+        this.emails.remove(email);
+    }
+
+    public void addPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumbers.add(phoneNumber);
+    }
+
+    public void removePhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumbers.remove(phoneNumber);
+    }
+
+    public void addLinkedContact(LinkedContact link) {
+        this.linkedContacts.add(link);
+    }
+
+    public void removeLinkedContact(LinkedContact link) {
+        this.linkedContacts.remove(link);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Contact)) return false;
+        Contact contact = (Contact) o;
+        return Objects.equals(getName(), contact.getName()) && Objects.equals(getBirthday(), contact.getBirthday()) && Objects.equals(getPhoneNumbers(), contact.getPhoneNumbers()) && Objects.equals(getEmails(), contact.getEmails()) && Objects.equals(getAddresses(), contact.getAddresses());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getBirthday(), getPhoneNumbers(), getEmails(), getAddresses());
     }
 }

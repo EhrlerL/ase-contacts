@@ -1,10 +1,10 @@
 package de.dhbw.ase.contacts.domain.entities.contactbook;
 
-import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -15,18 +15,20 @@ public class ContactBook {
     private String title;
     @ElementCollection
     private List<UUID> contacts;
+
     public ContactBook(String title, List<UUID> contacts) {
         this.title = title;
         this.contacts = contacts;
     }
 
-    public ContactBook() {
-        this.title = "";
+    public ContactBook(String title) {
+        this.title = title;
         this.contacts = new ArrayList<>();
     }
 
-    public ContactBook(String title) {
-        this.title = title;
+    public ContactBook() {
+        this.title = "";
+        this.contacts = new ArrayList<>();
     }
 
     public UUID getUuid() {
@@ -35,6 +37,10 @@ public class ContactBook {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<UUID> getContacts() {
@@ -47,5 +53,18 @@ public class ContactBook {
 
     public void removeContact(UUID uuid) {
         this.contacts.remove(uuid);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContactBook)) return false;
+        ContactBook that = (ContactBook) o;
+        return Objects.equals(getTitle(), that.getTitle());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle());
     }
 }

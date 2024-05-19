@@ -1,6 +1,6 @@
 package de.dhbw.ase.contacts.plugins.rest;
 
-import de.dhbw.ase.contacts.application.services.ContactService;
+import de.dhbw.ase.contacts.application.services.ContactBookService;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@Tag(name = "Contacts")
+@Tag(name = "ContactBooks")
 public class ContactBookController {
-    private final ContactService contactService;
+    private final ContactBookService contactBookService;
 
-    public ContactBookController(ContactService contactService) {
-        this.contactService = contactService;
+    public ContactBookController(ContactBookService contactBookService) {
+        this.contactBookService = contactBookService;
     }
 
     @GetMapping("/contactbook/{uuid}")
@@ -28,9 +28,10 @@ public class ContactBookController {
     })
     public ResponseEntity<ContactBook> getContactBook(@PathVariable UUID uuid) {
         try {
-            ContactBook contactBook = this.contactService.getContactBook(uuid);
+            ContactBook contactBook = this.contactBookService.getContactBook(uuid);
             return ResponseEntity.ok(contactBook);
         } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
@@ -40,7 +41,7 @@ public class ContactBookController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all ContactBooks")
     })
     public ResponseEntity<List<ContactBook>> getAllContactBooks() {
-        List<ContactBook> contactBooks = this.contactService.getAllContactBooks();
+        List<ContactBook> contactBooks = this.contactBookService.getAllContactBooks();
         return ResponseEntity.ok(contactBooks);
     }
 
@@ -49,11 +50,12 @@ public class ContactBookController {
             @ApiResponse(responseCode = "200", description = "Successfully saved ContactBook"),
             @ApiResponse(responseCode = "400", description = "Could not save ContactBook")
     })
-    public ResponseEntity<Void> saveContactBook(@RequestBody ContactBook contactBook) {
+    public ResponseEntity<UUID> saveContactBook(@RequestBody ContactBook contactBook) {
         try {
-            this.contactService.saveContactBook(contactBook);
-            return ResponseEntity.ok().build();
+            this.contactBookService.saveContactBook(contactBook);
+            return ResponseEntity.ok(contactBook.getUuid());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -67,11 +69,13 @@ public class ContactBookController {
     public ResponseEntity<Void> addContactToContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
         try {
             UUID contactUuid = UUID.fromString(contactStringId);
-            this.contactService.addContactToContactBook(contactBookUuid, contactUuid);
+            this.contactBookService.addContactToContactBook(contactBookUuid, contactUuid);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -85,25 +89,47 @@ public class ContactBookController {
     public ResponseEntity<Void> removeContactFromContactBook(@PathVariable UUID contactBookUuid, @RequestBody String contactStringId) {
         try {
             UUID contactUuid = UUID.fromString(contactStringId);
-            this.contactService.removeContactFromContactBook(contactBookUuid, contactUuid);
+            this.contactBookService.removeContactFromContactBook(contactBookUuid, contactUuid);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("/contactbook/delete/{uuid}")
+    @PostMapping("/contactbook/{uuid}/rename")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully renamed ContactBook"),
+            @ApiResponse(responseCode = "400", description = "Could not rename ContactBook"),
+            @ApiResponse(responseCode = "404", description = "ContactBook not found")
+    })
+    public ResponseEntity<Void> renameContactBook(@PathVariable UUID uuid, @RequestBody String newName) {
+        try {
+            this.contactBookService.renameContactBook(uuid, newName);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/contactbook/{uuid}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted ContactBook"),
             @ApiResponse(responseCode = "404", description = "ContactBook not found")
     })
     public ResponseEntity<Void> deleteContactBook(@PathVariable UUID uuid) {
         try {
-            this.contactService.deleteContactBook(uuid);
+            this.contactBookService.deleteContactBook(uuid);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
