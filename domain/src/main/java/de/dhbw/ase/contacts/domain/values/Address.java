@@ -24,11 +24,11 @@ public class Address {
         this.zipCode = "";
     }
 
-    private FieldType validateFieldType(FieldType fieldType) throws Exception {
-        if (fieldType == FieldType.MOBILE) {
-            throw new Exception("Address must not be from type \"mobile\"");
+    public boolean isValid() {
+        if (this.fieldType == FieldType.MOBILE) {
+            return false;
         } else {
-            return fieldType;
+            return true;
         }
     }
 
@@ -48,7 +48,4 @@ public class Address {
         return zipCode;
     }
 
-    public String getAddress() {
-        return this.street + ", " + this.zipCode + " " + this.city;
-    }
 }
