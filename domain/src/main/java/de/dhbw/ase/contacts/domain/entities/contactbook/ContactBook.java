@@ -37,6 +37,10 @@ public class ContactBook {
         return contacts;
     }
 
+    public void setContacts(List<UUID> contacts) {
+        this.contacts = contacts;
+    }
+
     public void addContact(UUID uuid) {
         this.contacts.add(uuid);
     }
