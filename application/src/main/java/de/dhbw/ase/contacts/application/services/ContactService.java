@@ -42,13 +42,13 @@ public class ContactService {
         if(contact.getName().toString().isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
-        if (contact.getAddresses().stream().anyMatch(address -> address.isInvalid())) {
+        if (contact.getAddresses().stream().anyMatch(Address::isInvalid)) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for address");
         }
-        if (contact.getEmails().stream().anyMatch(email -> email.isInvalid())) {
+        if (contact.getEmails().stream().anyMatch(Email::isInvalid)) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for email");
         }
-        if (contact.getPhoneNumbers().stream().anyMatch(phoneNumber -> phoneNumber.isInvalid())) {
+        if (contact.getPhoneNumbers().stream().anyMatch(PhoneNumber::isInvalid)) {
             throw new IllegalArgumentException("FieldType \"SCHOOL\" not allowed for phone number");
         }
 
