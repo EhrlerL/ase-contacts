@@ -66,9 +66,6 @@ public class ContactController {
 		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().build();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().build();
 		}
 	}
 
