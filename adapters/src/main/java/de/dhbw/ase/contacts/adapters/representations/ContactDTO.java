@@ -4,6 +4,7 @@ import de.dhbw.ase.contacts.domain.values.Name;
 import de.dhbw.ase.contacts.domain.values.PhoneNumber;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ContactDTO {
@@ -29,5 +30,16 @@ public class ContactDTO {
         return phoneNumbers;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContactDTO that)) return false;
+        return Objects.equals(getUuid(), that.getUuid()) && Objects.equals(getName(), that.getName()) && Objects.equals(getPhoneNumbers(), that.getPhoneNumbers());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUuid(), getName(), getPhoneNumbers());
+    }
 }
 

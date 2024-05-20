@@ -4,6 +4,7 @@ import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
@@ -34,4 +35,16 @@ public class LinkedContact {
         return connection;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LinkedContact)) return false;
+        LinkedContact that = (LinkedContact) o;
+        return Objects.equals(getLinkedContactUuid(), that.getLinkedContactUuid()) && getConnection() == that.getConnection();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLinkedContactUuid(), getConnection());
+    }
 }

@@ -2,6 +2,8 @@ package de.dhbw.ase.contacts.domain.values;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 public class Name {
     private String firstName;
@@ -40,5 +42,18 @@ public class Name {
     public void setFullName(Name name) {
         this.firstName = name.getFirstName();
         this.lastName = name.getLastName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Name)) return false;
+        Name name = (Name) o;
+        return Objects.equals(getFirstName(), name.getFirstName()) && Objects.equals(getLastName(), name.getLastName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFirstName(), getLastName());
     }
 }

@@ -3,6 +3,8 @@ package de.dhbw.ase.contacts.domain.values;
 import de.dhbw.ase.contacts.domain.values.enums.FieldType;
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 public class Address {
     private final FieldType fieldType;
@@ -48,4 +50,16 @@ public class Address {
         return zipCode;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address address = (Address) o;
+        return getFieldType() == address.getFieldType() && Objects.equals(getStreet(), address.getStreet()) && Objects.equals(getCity(), address.getCity()) && Objects.equals(getZipCode(), address.getZipCode());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFieldType(), getStreet(), getCity(), getZipCode());
+    }
 }
