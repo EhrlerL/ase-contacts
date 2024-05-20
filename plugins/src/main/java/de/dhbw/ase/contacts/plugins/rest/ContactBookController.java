@@ -54,7 +54,7 @@ public class ContactBookController {
         try {
             this.contactBookService.saveContactBook(contactBook);
             return ResponseEntity.ok(contactBook.getUuid());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }

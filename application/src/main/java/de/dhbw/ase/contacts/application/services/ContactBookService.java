@@ -32,6 +32,9 @@ public class ContactBookService {
     }
 
     public void saveContactBook(ContactBook contactBook) {
+        if (contactBook.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Title is required");
+        }
         this.contactBookBridgeRepository.save(contactBook);
     }
 
