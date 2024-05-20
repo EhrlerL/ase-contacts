@@ -40,6 +40,9 @@ public class ContactService {
     }
 
     public void saveContact(Contact contact) {
+        if(contact.getName().getFullName().equals("")) {
+            throw new IllegalArgumentException("Name is required");
+        }
         if (contact.getAddresses().stream().anyMatch(address -> !address.isValid())) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for address");
         }
@@ -52,7 +55,7 @@ public class ContactService {
 
         for(Contact c : this.contactBridgeRepository.findAll()) {
             if(c.equals(contact)) {
-                throw new IllegalArgumentException("Contact with this name already exists");
+                throw new IllegalArgumentException("Contact already exists");
             }
         }
 
@@ -152,7 +155,7 @@ public class ContactService {
         Contact linkedContact = this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        LinkedContact link = new LinkedContact(linkedContact.getUuid(), connection);
+        LinkedContact link = new LinkedContact(linkedContactUuid, connection);
         contact.addLinkedContact(link);
         this.contactBridgeRepository.save(contact);
     }

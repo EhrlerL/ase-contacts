@@ -245,7 +245,7 @@ public class ContactController {
 			@ApiResponse(responseCode = "400", description = "Could not link Contacts"),
 			@ApiResponse(responseCode = "404", description = "Contact not found")
 	})
-	public ResponseEntity<Void> linkContact(@PathVariable UUID contactUuid, @RequestBody String linkedContactId,
+	public ResponseEntity<Void> linkContacts(@PathVariable UUID contactUuid, @RequestBody String linkedContactId,
 											@RequestBody String connection) {
 		try {
 			UUID linkedContactUuid = UUID.fromString(linkedContactId);
@@ -255,7 +255,7 @@ public class ContactController {
 		} catch (EntityNotFoundException e) {
 			System.out.println(e.getMessage());
 			return ResponseEntity.notFound().build();
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().build();
 		}
@@ -267,7 +267,7 @@ public class ContactController {
 			@ApiResponse(responseCode = "400", description = "Could not unlink Contacts"),
 			@ApiResponse(responseCode = "404", description = "Contact not found")
 	})
-	public ResponseEntity<Void> unlinkContact(@PathVariable UUID contactUuid, @RequestBody String linkedContactId) {
+	public ResponseEntity<Void> unlinkContacts(@PathVariable UUID contactUuid, @RequestBody String linkedContactId) {
 		try {
 			UUID linkedContactUuid = UUID.fromString(linkedContactId);
 			this.contactService.unlinkContacts(contactUuid, linkedContactUuid);
