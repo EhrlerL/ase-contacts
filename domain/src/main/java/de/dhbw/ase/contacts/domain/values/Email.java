@@ -20,12 +20,8 @@ public class Email {
         this.email = "";
     }
 
-    public boolean isValid() {
-        if (this.fieldType == FieldType.MOBILE) {
-            return false;
-        } else {
-            return true;
-        }
+    public boolean isInvalid() {
+        return this.fieldType == FieldType.MOBILE;
     }
 
     public FieldType getFieldType() {

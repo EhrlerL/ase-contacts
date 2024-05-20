@@ -20,12 +20,8 @@ public class PhoneNumber {
         this.phoneNumber = "";
     }
 
-    public boolean isValid() {
-        if (this.fieldType == FieldType.SCHOOL) {
-            return false;
-        } else {
-            return true;
-        }
+    public boolean isInvalid() {
+        return this.fieldType == FieldType.SCHOOL;
     }
 
     public FieldType getFieldType() {

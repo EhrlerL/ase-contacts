@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ContactService {
@@ -40,16 +39,16 @@ public class ContactService {
     }
 
     public void saveContact(Contact contact) {
-        if(contact.getName().getFullName().equals("")) {
+        if(contact.getName().toString().isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
-        if (contact.getAddresses().stream().anyMatch(address -> !address.isValid())) {
+        if (contact.getAddresses().stream().anyMatch(address -> address.isInvalid())) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for address");
         }
-        if (contact.getEmails().stream().anyMatch(email -> !email.isValid())) {
+        if (contact.getEmails().stream().anyMatch(email -> email.isInvalid())) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for email");
         }
-        if (contact.getPhoneNumbers().stream().anyMatch(phoneNumber -> !phoneNumber.isValid())) {
+        if (contact.getPhoneNumbers().stream().anyMatch(phoneNumber -> phoneNumber.isInvalid())) {
             throw new IllegalArgumentException("FieldType \"SCHOOL\" not allowed for phone number");
         }
 
@@ -79,7 +78,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        contact.getName().setFullName(newName);
+        contact.setName(new Name(newName));
         this.contactBridgeRepository.save(contact);
     }
 
@@ -95,7 +94,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        if (!address.isValid()) {
+        if (address.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for address");
         }
         contact.addAddress(address);
@@ -114,7 +113,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        if (!email.isValid()) {
+        if (email.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for email");
         }
         contact.addEmail(email);
@@ -133,7 +132,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        if (!phoneNumber.isValid()) {
+        if (phoneNumber.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"SCHOOL\" not allowed for phone number");
         }
         contact.addPhoneNumber(phoneNumber);

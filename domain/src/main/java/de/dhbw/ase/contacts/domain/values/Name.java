@@ -14,6 +14,11 @@ public class Name {
         this.lastName = lastName;
     }
 
+    public Name(Name name) {
+        this.firstName = name.getFirstName();
+        this.lastName = name.getLastName();
+    }
+
     public Name() {
         this.firstName = "";
         this.lastName = "";
@@ -27,23 +32,6 @@ public class Name {
         return lastName;
     }
 
-    public String getFullName() {
-        return this.firstName + " " + this.lastName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setFullName(Name name) {
-        this.firstName = name.getFirstName();
-        this.lastName = name.getLastName();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,5 +43,9 @@ public class Name {
     @Override
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastName());
+    }
+
+    public String toString() {
+        return this.firstName + " " + this.lastName;
     }
 }
