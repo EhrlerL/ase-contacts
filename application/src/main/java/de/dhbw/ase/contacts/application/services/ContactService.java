@@ -151,7 +151,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(contactUuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        Contact linkedContact = this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
+        this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
         LinkedContact link = new LinkedContact(linkedContactUuid, connection);
@@ -163,7 +163,7 @@ public class ContactService {
         Contact contact = this.contactBridgeRepository.findById(contactUuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
-        Contact linkedContact = this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
+        this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
                 () -> new EntityNotFoundException("Contact not found")
         );
         LinkedContact link = contact.getLinkedContacts().stream()
