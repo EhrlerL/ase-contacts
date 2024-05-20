@@ -1,8 +1,6 @@
 package de.dhbw.ase.contacts.plugins.rest;
 
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
-import de.dhbw.ase.contacts.adapters.representations.mappers.ContactToDTOMapper;
-import de.dhbw.ase.contacts.adapters.representations.mappers.DTOToContactMapper;
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.values.*;
@@ -30,13 +28,6 @@ class ContactControllerTest {
 
     @Mock
     private ContactService contactService;
-
-    @Mock
-    private ContactToDTOMapper contactToDTOMapper;
-
-    @Mock
-    private DTOToContactMapper dtoToContactMapper;
-
 
     @Test
     void getContactValid() {
@@ -163,24 +154,6 @@ class ContactControllerTest {
     void linkContactsValid() {
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
-        Contact contact1 = new Contact(
-                uuid1,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>()
-        );
-        Contact contact2 = new Contact(
-                uuid2,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>()
-        );
 
         doNothing().when(contactService).linkContacts(uuid1, uuid2, ContactConnection.COLLEAGUE);
 
@@ -221,24 +194,6 @@ class ContactControllerTest {
     void unlinkContactsValid() {
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
-        Contact contact1 = new Contact(
-                uuid1,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(uuid2, ContactConnection.COLLEAGUE)))
-        );
-        Contact contact2 = new Contact(
-                uuid2,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(uuid1, ContactConnection.COLLEAGUE)))
-        );
 
         doNothing().when(contactService).unlinkContacts(uuid1, uuid2);
 
