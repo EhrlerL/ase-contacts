@@ -1,6 +1,5 @@
 package de.dhbw.ase.contacts.domain.values;
 
-import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import jakarta.persistence.Embeddable;
 
@@ -20,11 +19,6 @@ public class LinkedContact {
     public LinkedContact() {
         this.linkedContactUuid = null;
         this.connection = null;
-    }
-
-    public LinkedContact(ContactConnection connection) {
-        this.linkedContactUuid = null;
-        this.connection = connection;
     }
 
     public UUID getLinkedContactUuid() {
