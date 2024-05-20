@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ContactBookService {
@@ -82,9 +81,7 @@ public class ContactBookService {
     private ContactBook sortContactBook(ContactBook contactBook) {
         List<Contact> contacts = new ArrayList<>();
         contactBook.getContacts().forEach(uuid -> this.contactBridgeRepository.findById(uuid).ifPresent(contacts::add));
-        List<Contact> sorted = ContactSorting.sortByNameAsc(contacts);
-        contactBook.setContacts(sorted.stream().map(Contact::getUuid).collect(Collectors.toList()));
-        return contactBook;
+        return ContactSorting.sortByNameAsc(contacts, contactBook);
     }
 
 }
