@@ -16,16 +16,6 @@ public class ContactBook {
     @ElementCollection
     private List<UUID> contacts;
 
-    public ContactBook(String title, List<UUID> contacts) {
-        this.title = title;
-        this.contacts = contacts;
-    }
-
-    public ContactBook(String title) {
-        this.title = title;
-        this.contacts = new ArrayList<>();
-    }
-
     public ContactBook() {
         this.title = "";
         this.contacts = new ArrayList<>();
