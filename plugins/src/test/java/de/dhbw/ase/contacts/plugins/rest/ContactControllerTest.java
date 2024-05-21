@@ -73,19 +73,14 @@ class ContactControllerTest {
                 new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
                 new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE)))
         );
-        ContactDTO contactDTO = new ContactDTO(
-                contactUuid,
-                new Name("Max", "Mustermann"),
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890")))
-        );
         when(contactService.getAllContacts()).thenReturn(List.of(contact));
 
-        ResponseEntity<List<ContactDTO>> response = contactController.getAllContacts();
+        ResponseEntity<List<Contact>> response = contactController.getAllContacts();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals(contactDTO, response.getBody().get(0));
+        assertEquals(contact, response.getBody().get(0));
     }
 
     @Test
@@ -98,10 +93,19 @@ class ContactControllerTest {
                 new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
                 new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
                 new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE)))
+                new ArrayList<>()
+        );
+        ContactDTO contactDTO = new ContactDTO(
+                new Name("Max", "Mustermann"),
+                "1.1.2001",
+                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
+                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
+                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345")))
         );
 
-        ResponseEntity<UUID> response = contactController.saveContact(contact);
+        doReturn(contactUuid).when(contactService).saveContact(contact);
+
+        ResponseEntity<UUID> response = contactController.saveContact(contactDTO);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(contactUuid, response.getBody());
@@ -117,12 +121,19 @@ class ContactControllerTest {
                 new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
                 new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
                 new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE)))
+                new ArrayList<>()
+        );
+        ContactDTO contactDTO = new ContactDTO(
+                new Name("Max", "Mustermann"),
+                "1.1.2001",
+                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
+                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
+                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345")))
         );
 
         doThrow(new IllegalArgumentException()).when(contactService).saveContact(contact);
 
-        ResponseEntity<UUID> response = contactController.saveContact(contact);
+        ResponseEntity<UUID> response = contactController.saveContact(contactDTO);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());

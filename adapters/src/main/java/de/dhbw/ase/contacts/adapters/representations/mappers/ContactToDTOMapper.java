@@ -20,9 +20,11 @@ public class ContactToDTOMapper implements Function<Contact, ContactDTO> {
    @Override
    public ContactDTO apply(Contact contact) {
         return new ContactDTO(
-                contact.getUuid(),
                 contact.getName(),
-                contact.getPhoneNumbers()
+                contact.getBirthday(),
+                contact.getPhoneNumbers(),
+                contact.getEmails(),
+                contact.getAddresses()
         );
    }
 }

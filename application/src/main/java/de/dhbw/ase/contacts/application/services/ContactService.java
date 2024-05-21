@@ -38,7 +38,7 @@ public class ContactService {
         return this.contactBridgeRepository.findAll();
     }
 
-    public void saveContact(Contact contact) {
+    public UUID saveContact(Contact contact) {
         if(contact.getName().toString().isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
@@ -59,6 +59,7 @@ public class ContactService {
         }
 
         this.contactBridgeRepository.save(contact);
+        return contact.getUuid();
     }
 
     public void deleteContact(UUID uuid) {

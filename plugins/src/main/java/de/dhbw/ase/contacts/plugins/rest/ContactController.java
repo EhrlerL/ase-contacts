@@ -1,7 +1,7 @@
 package de.dhbw.ase.contacts.plugins.rest;
 
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
-import de.dhbw.ase.contacts.adapters.representations.mappers.ContactToDTOMapper;
+import de.dhbw.ase.contacts.adapters.representations.mappers.DTOToContactMapper;
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.values.Address;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Contacts")
@@ -48,10 +47,9 @@ public class ContactController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successfully retrieved all Contacts"),
 	})
-	public ResponseEntity<List<ContactDTO>> getAllContacts() {
+	public ResponseEntity<List<Contact>> getAllContacts() {
 		List<Contact> contacts = this.contactService.getAllContacts();
-		List<ContactDTO> contactDTOs = contacts.stream().map(c -> new ContactToDTOMapper().apply(c)).collect(Collectors.toList());
-		return ResponseEntity.ok(contactDTOs);
+		return ResponseEntity.ok(contacts);
 	}
 
 	@PostMapping("/contact/save")
@@ -59,10 +57,11 @@ public class ContactController {
 			@ApiResponse(responseCode = "200", description = "Successfully saved Contact"),
 			@ApiResponse(responseCode = "400", description = "Could not save Contact")
 	})
-	public ResponseEntity<UUID> saveContact(@RequestBody Contact contact) {
+	public ResponseEntity<UUID> saveContact(@RequestBody ContactDTO contactDTO) {
 		try {
-			this.contactService.saveContact(contact);
-			return ResponseEntity.ok(contact.getUuid());
+			Contact contact = new DTOToContactMapper().apply(contactDTO);
+			UUID uuid = this.contactService.saveContact(contact);
+			return ResponseEntity.ok(uuid);
 		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().build();

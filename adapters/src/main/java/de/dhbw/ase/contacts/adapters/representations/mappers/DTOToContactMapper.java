@@ -19,14 +19,19 @@ public class DTOToContactMapper implements Function<ContactDTO, Contact> {
     public Contact apply(ContactDTO contactDTO) {
         return new Contact(
                 contactDTO.getName(),
-                contactDTO.getPhoneNumbers()
+                contactDTO.getBirthday(),
+                contactDTO.getPhoneNumbers(),
+                contactDTO.getEmails(),
+                contactDTO.getAddresses()
         );
     }
 
     public Contact update(Contact oldContact, ContactDTO newContactDTO) {
-        oldContact.setUuid(newContactDTO.getUuid());
         oldContact.setName(newContactDTO.getName());
+        oldContact.setBirthday(newContactDTO.getBirthday());
         oldContact.setPhoneNumbers(newContactDTO.getPhoneNumbers());
+        oldContact.setEmails(newContactDTO.getEmails());
+        oldContact.setAddresses(newContactDTO.getAddresses());
         return oldContact;
     }
 }
