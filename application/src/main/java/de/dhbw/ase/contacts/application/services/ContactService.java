@@ -9,7 +9,6 @@ import de.dhbw.ase.contacts.domain.values.Address;
 import de.dhbw.ase.contacts.domain.values.Email;
 import de.dhbw.ase.contacts.domain.values.Name;
 import de.dhbw.ase.contacts.domain.values.PhoneNumber;
-import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,11 +129,10 @@ public class ContactService {
         this.contactBridgeRepository.save(contact);
     }
 
-    public void linkContacts(UUID contactUuid, UUID linkedContactUuid, ContactConnection connection) {
+    public void linkContacts(UUID contactUuid, LinkedContact linkedContact) {
         Contact contact = getContact(contactUuid);
-        getContact(linkedContactUuid);
-        LinkedContact link = new LinkedContact(linkedContactUuid, connection);
-        contact.addLinkedContact(link);
+        getContact(linkedContact.getLinkedContactUuid());
+        contact.addLinkedContact(linkedContact);
         this.contactBridgeRepository.save(contact);
     }
 

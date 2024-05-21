@@ -4,11 +4,7 @@ import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
 import de.dhbw.ase.contacts.adapters.representations.mappers.contact.DTOToContactMapper;
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
-import de.dhbw.ase.contacts.domain.values.Address;
-import de.dhbw.ase.contacts.domain.values.Email;
-import de.dhbw.ase.contacts.domain.values.Name;
-import de.dhbw.ase.contacts.domain.values.PhoneNumber;
-import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
+import de.dhbw.ase.contacts.domain.values.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -241,12 +237,9 @@ public class ContactController {
 			@ApiResponse(responseCode = "400", description = "Could not link Contacts"),
 			@ApiResponse(responseCode = "404", description = "Contact not found")
 	})
-	public ResponseEntity<Void> linkContacts(@PathVariable UUID contactUuid, @RequestBody String linkedContactId,
-											@RequestBody String connection) {
+	public ResponseEntity<Void> linkContacts(@PathVariable UUID contactUuid, @RequestBody LinkedContact linkedContact) {
 		try {
-			UUID linkedContactUuid = UUID.fromString(linkedContactId);
-			ContactConnection contactConnection = ContactConnection.valueOf(connection);
-			this.contactService.linkContacts(contactUuid, linkedContactUuid, contactConnection);
+			this.contactService.linkContacts(contactUuid, linkedContact);
 			return ResponseEntity.ok().build();
 		} catch (EntityNotFoundException e) {
 			System.out.println(e.getMessage());
