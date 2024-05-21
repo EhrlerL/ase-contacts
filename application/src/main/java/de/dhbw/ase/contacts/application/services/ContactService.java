@@ -62,9 +62,7 @@ public class ContactService {
     }
 
     public void deleteContact(UUID uuid) {
-        this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        getContact(uuid);
         List<ContactBook> contactBooks = this.contactBookBridgeRepository.findAll();
         contactBooks.forEach(book -> {
             book.removeContact(uuid);
@@ -75,25 +73,19 @@ public class ContactService {
     }
 
     public void renameContact(UUID uuid, Name newName) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         contact.setName(new Name(newName));
         this.contactBridgeRepository.save(contact);
     }
 
     public void updateBirthday(UUID uuid, String newBirthday) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         contact.setBirthday(newBirthday);
         this.contactBridgeRepository.save(contact);
     }
 
     public void addAddress(UUID uuid, Address address) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         if (address.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for address");
         }
@@ -102,17 +94,13 @@ public class ContactService {
     }
 
     public void removeAddress(UUID uuid, Address address) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         contact.removeAddress(address);
         this.contactBridgeRepository.save(contact);
     }
 
     public void addEmail(UUID uuid, Email email) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         if (email.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"MOBILE\" not allowed for email");
         }
@@ -121,17 +109,13 @@ public class ContactService {
     }
 
     public void removeEmail(UUID uuid, Email email) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         contact.removeEmail(email);
         this.contactBridgeRepository.save(contact);
     }
 
     public void addPhoneNumber(UUID uuid, PhoneNumber phoneNumber) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         if (phoneNumber.isInvalid()) {
             throw new IllegalArgumentException("FieldType \"SCHOOL\" not allowed for phone number");
         }
@@ -140,32 +124,22 @@ public class ContactService {
     }
 
     public void removePhoneNumber(UUID uuid, PhoneNumber phoneNumber) {
-        Contact contact = this.contactBridgeRepository.findById(uuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(uuid);
         contact.removePhoneNumber(phoneNumber);
         this.contactBridgeRepository.save(contact);
     }
 
     public void linkContacts(UUID contactUuid, UUID linkedContactUuid, ContactConnection connection) {
-        Contact contact = this.contactBridgeRepository.findById(contactUuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
-        this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(contactUuid);
+        getContact(linkedContactUuid);
         LinkedContact link = new LinkedContact(linkedContactUuid, connection);
         contact.addLinkedContact(link);
         this.contactBridgeRepository.save(contact);
     }
 
     public void unlinkContacts(UUID contactUuid, UUID linkedContactUuid) {
-        Contact contact = this.contactBridgeRepository.findById(contactUuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
-        this.contactBridgeRepository.findById(linkedContactUuid).orElseThrow(
-                () -> new EntityNotFoundException("Contact not found")
-        );
+        Contact contact = getContact(contactUuid);
+        getContact(linkedContactUuid);
         LinkedContact link = contact.getLinkedContacts().stream()
                 .filter(lc -> lc.getLinkedContactUuid().equals(linkedContactUuid))
                 .findFirst()
