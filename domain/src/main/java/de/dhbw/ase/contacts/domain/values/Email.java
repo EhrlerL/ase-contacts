@@ -1,5 +1,6 @@
 package de.dhbw.ase.contacts.domain.values;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.dhbw.ase.contacts.domain.values.enums.FieldType;
 import jakarta.persistence.Embeddable;
 
@@ -20,6 +21,7 @@ public class Email {
         this.email = "";
     }
 
+    @JsonIgnore
     public boolean isInvalid() {
         return this.fieldType == FieldType.MOBILE;
     }
