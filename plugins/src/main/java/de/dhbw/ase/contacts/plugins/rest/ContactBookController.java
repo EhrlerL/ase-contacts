@@ -1,7 +1,5 @@
 package de.dhbw.ase.contacts.plugins.rest;
 
-import de.dhbw.ase.contacts.adapters.representations.ContactBookDTO;
-import de.dhbw.ase.contacts.adapters.representations.mappers.contactbook.DTOToContactBookMapper;
 import de.dhbw.ase.contacts.application.services.ContactBookService;
 import de.dhbw.ase.contacts.domain.entities.contactbook.ContactBook;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -52,9 +50,9 @@ public class ContactBookController {
             @ApiResponse(responseCode = "200", description = "Successfully saved ContactBook"),
             @ApiResponse(responseCode = "400", description = "Could not save ContactBook")
     })
-    public ResponseEntity<UUID> saveContactBook(@RequestBody ContactBookDTO contactBookDTO) {
+    public ResponseEntity<UUID> saveContactBook(@RequestBody String title) {
         try {
-            ContactBook contactBook = new DTOToContactBookMapper().apply(contactBookDTO);
+            ContactBook contactBook = new ContactBook(title);
             this.contactBookService.saveContactBook(contactBook);
             return ResponseEntity.ok(contactBook.getUuid());
         } catch (IllegalArgumentException e) {
