@@ -103,12 +103,20 @@ public class Contact {
         this.name = name;
     }
 
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setEmails(List<Email> emails) {
+        this.emails = emails;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     public void addAddress(Address address) {
@@ -155,4 +163,5 @@ public class Contact {
     public int hashCode() {
         return Objects.hash(getName(), getBirthday(), getPhoneNumbers(), getEmails(), getAddresses());
     }
+
 }

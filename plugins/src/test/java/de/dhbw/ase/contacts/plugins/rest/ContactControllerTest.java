@@ -3,6 +3,7 @@ package de.dhbw.ase.contacts.plugins.rest;
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
+import de.dhbw.ase.contacts.domain.entities.contact.ContactBuilder;
 import de.dhbw.ase.contacts.domain.values.*;
 import de.dhbw.ase.contacts.domain.values.enums.ContactConnection;
 import de.dhbw.ase.contacts.domain.values.enums.FieldType;
@@ -32,15 +33,14 @@ class ContactControllerTest {
     @Test
     void getContactValid() {
         UUID contactUuid = UUID.randomUUID();
-        Contact contact = new Contact(
-                contactUuid,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE)))
-                );
+        Contact contact = ContactBuilder.named(new Name("Max", "Mustermann"))
+                .identifiedBy(contactUuid)
+                .born("1.1.2001")
+                .withPhoneNumbers(new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))))
+                .withEmails(new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))))
+                .withAddresses(new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))))
+                .withLinkedContacts(new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE))))
+                .build();
 
         when(contactService.getContact(contactUuid)).thenReturn(contact);
 
@@ -64,15 +64,14 @@ class ContactControllerTest {
     @Test
     void getAllContactsValid() {
         UUID contactUuid = UUID.randomUUID();
-        Contact contact = new Contact(
-                contactUuid,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE)))
-        );
+        Contact contact = ContactBuilder.named(new Name("Max", "Mustermann"))
+                .identifiedBy(contactUuid)
+                .born("1.1.2001")
+                .withPhoneNumbers(new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))))
+                .withEmails(new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))))
+                .withAddresses(new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))))
+                .withLinkedContacts(new ArrayList<>(Collections.singleton(new LinkedContact(UUID.randomUUID(), ContactConnection.COLLEAGUE))))
+                .build();
         when(contactService.getAllContacts()).thenReturn(List.of(contact));
 
         ResponseEntity<List<Contact>> response = contactController.getAllContacts();
@@ -86,15 +85,13 @@ class ContactControllerTest {
     @Test
     void saveContactValid() {
         UUID contactUuid = UUID.randomUUID();
-        Contact contact = new Contact(
-                contactUuid,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>()
-        );
+        Contact contact = ContactBuilder.named(new Name("Max", "Mustermann"))
+                .identifiedBy(contactUuid)
+                .born("1.1.2001")
+                .withPhoneNumbers(new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))))
+                .withEmails(new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))))
+                .withAddresses(new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))))
+                .build();
         ContactDTO contactDTO = new ContactDTO(
                 new Name("Max", "Mustermann"),
                 "1.1.2001",
@@ -114,15 +111,13 @@ class ContactControllerTest {
     @Test
     void saveContactInvalid() {
         UUID contactUuid = UUID.randomUUID();
-        Contact contact = new Contact(
-                contactUuid,
-                new Name("Max", "Mustermann"),
-                "1.1.2001",
-                new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))),
-                new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))),
-                new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))),
-                new ArrayList<>()
-        );
+        Contact contact = ContactBuilder.named(new Name("Max", "Mustermann"))
+                .identifiedBy(contactUuid)
+                .born("1.1.2001")
+                .withPhoneNumbers(new ArrayList<>(Collections.singleton(new PhoneNumber(FieldType.MOBILE, "1234567890"))))
+                .withEmails(new ArrayList<>(Collections.singleton(new Email(FieldType.WORK, "max@mustermann"))))
+                .withAddresses(new ArrayList<>(Collections.singleton(new Address(FieldType.PRIVATE, "Musterstraße 1", "Musterstadt", "12345"))))
+                .build();
         ContactDTO contactDTO = new ContactDTO(
                 new Name("Max", "Mustermann"),
                 "1.1.2001",

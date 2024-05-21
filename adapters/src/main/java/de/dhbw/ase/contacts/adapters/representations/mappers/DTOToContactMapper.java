@@ -2,6 +2,7 @@ package de.dhbw.ase.contacts.adapters.representations.mappers;
 
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
+import de.dhbw.ase.contacts.domain.entities.contact.ContactBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +18,12 @@ public class DTOToContactMapper implements Function<ContactDTO, Contact> {
 
     @Override
     public Contact apply(ContactDTO contactDTO) {
-        return new Contact(
-                contactDTO.getName(),
-                contactDTO.getBirthday(),
-                contactDTO.getPhoneNumbers(),
-                contactDTO.getEmails(),
-                contactDTO.getAddresses()
-        );
+        return ContactBuilder.named(contactDTO.getName())
+                .born(contactDTO.getBirthday())
+                .withPhoneNumbers(contactDTO.getPhoneNumbers())
+                .withEmails(contactDTO.getEmails())
+                .withAddresses(contactDTO.getAddresses())
+                .build();
     }
 
     public Contact update(Contact oldContact, ContactDTO newContactDTO) {
