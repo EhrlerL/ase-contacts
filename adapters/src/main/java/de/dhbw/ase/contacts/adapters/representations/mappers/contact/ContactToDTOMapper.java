@@ -1,4 +1,4 @@
-package de.dhbw.ase.contacts.adapters.representations.mappers;
+package de.dhbw.ase.contacts.adapters.representations.mappers.contact;
 
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;

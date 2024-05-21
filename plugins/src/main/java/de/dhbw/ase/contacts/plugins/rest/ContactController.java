@@ -1,7 +1,7 @@
 package de.dhbw.ase.contacts.plugins.rest;
 
 import de.dhbw.ase.contacts.adapters.representations.ContactDTO;
-import de.dhbw.ase.contacts.adapters.representations.mappers.DTOToContactMapper;
+import de.dhbw.ase.contacts.adapters.representations.mappers.contact.DTOToContactMapper;
 import de.dhbw.ase.contacts.application.services.ContactService;
 import de.dhbw.ase.contacts.domain.entities.contact.Contact;
 import de.dhbw.ase.contacts.domain.values.Address;

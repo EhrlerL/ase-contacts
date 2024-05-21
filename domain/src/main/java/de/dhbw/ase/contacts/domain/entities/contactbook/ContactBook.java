@@ -21,6 +21,10 @@ public class ContactBook {
         this.contacts = new ArrayList<>();
     }
 
+    public ContactBook(String title) {
+        this.title = title;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
