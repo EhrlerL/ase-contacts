@@ -4,6 +4,8 @@ public enum ContactConnection {
     PARTNER,
     WIFE,
     HUSBAND,
+    BROTHER,
+    SISTER,
     PARENT,
     MOTHER,
     FATHER,
